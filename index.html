@@ -25,7 +25,6 @@
             cursor: pointer;
         }
 
-        /* Fullscreen Wrapper holding both background and foreground */
         .stage {
             position: relative;
             width: 100%;
@@ -36,7 +35,6 @@
             overflow: hidden;
         }
 
-        /* Blurred background image layer */
         .bg-blur-container {
             position: absolute;
             top: 0;
@@ -44,14 +42,13 @@
             width: 100%;
             height: 100%;
             z-index: 1;
-            transform: scale(1.1); /* Prevents white edges from the blur filter */
+            transform: scale(1.1);
             filter: blur(20px) brightness(0.6);
             transition: background-image var(--transition-speed) ease-in-out;
             background-size: cover;
             background-position: center;
         }
 
-        /* Foreground Wrapper containing the fitted crisp photo */
         .photo-container {
             position: relative;
             z-index: 2;
@@ -60,20 +57,19 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            padding: 20px; /* Safe breathing room for all dimensions */
+            padding: 20px;
         }
 
         #main-photo {
             max-width: 100%;
             max-height: 100%;
-            object-fit: contain; /* Ensures long portrait or landscape pictures never cut off */
+            object-fit: contain;
             box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
             border-radius: 8px;
             opacity: 1;
             transition: transform var(--transition-speed), opacity var(--transition-speed);
         }
 
-        /* Floating Hearts Layer */
         .heart-particle {
             position: absolute;
             pointer-events: none;
@@ -94,7 +90,7 @@
             }
         }
 
-        /* --- 19 Completely Unique Custom Transitions --- */
+        /* --- 9 Completely Unique Custom Transitions --- */
         .t0 { opacity: 0 !important; transform: scale(1.4) rotate(-8deg) !important; }
         .t1 { opacity: 0 !important; transform: translateX(100vw) !important; }
         .t2 { opacity: 0 !important; transform: rotateY(90deg) !important; }
@@ -103,107 +99,12 @@
         .t5 { opacity: 0 !important; transform: rotate(180deg) scale(0.4) !important; }
         .t6 { opacity: 0 !important; transform: scale(1.3, 0.7) translateY(-80px) !important; }
         .t7 { opacity: 0 !important; transform: translateX(-100vw) !important; }
-        .t8 { opacity: 0 !important; transform: translateX(80vw) rotate(20deg) !important; }
-        .t9 { opacity: 0 !important; transform: rotate(-360deg) scale(0.8) !important; }
-        .t10 { opacity: 0 !important; transform: translateY(-100vh) !important; }
-        .t11 { opacity: 0 !important; transform: rotate(-180deg) scale(1.4) !important; }
-        .t12 { opacity: 0 !important; transform: rotate(540deg) scale(0.05) !important; }
-        .t13 { opacity: 0 !important; transform: skewX(20deg) scale(1.1) !important; }
-        .t14 { opacity: 0 !important; transform: translate(-50vw, 50vh) rotate(-25deg) !important; }
-        .t15 { opacity: 0 !important; transform: translateX(-80vw) rotate(-20deg) !important; }
-        .t16 { opacity: 0 !important; transform: translateY(-60px) rotate(-15deg) !important; transform-origin: top center !important; }
-        .t17 { opacity: 0 !important; transform: translate(50vw, -50vh) rotate(25deg) !important; }
-        .t18 { opacity: 0 !important; transform: scaleY(0) !important; }
+        .t8 { opacity: 0 !important; transform: rotate(-360deg) scale(0.8) !important; }
     </style>
 </head>
 <body>
 
     <div class="stage" id="stage">
         <div class="bg-blur-container" id="bg-blur"></div>
-        
         <div class="photo-container">
-            <img id="main-photo" src="1.jpg" alt="Memory 1" onerror="this.src='https://via.placeholder.com/1000x1500?text=Photo+1.jpg'">
-        </div>
-    </div>
-
-    <script>
-        const totalPhotos = 20;
-        const stage = document.getElementById('stage');
-        const photo = document.getElementById('main-photo');
-        const bgBlur = document.getElementById('bg-blur');
-        
-        let currentIndex = 1; // Starts on your best picture (1.jpg)
-        let isTransitioning = false;
-
-        // Array of unique transition configurations
-        const transitionClasses = [
-            't0', 't1', 't2', 't3', 't4', 't5', 't6', 't7', 't8', 't9', 
-            't10', 't11', 't12', 't13', 't14', 't15', 't16', 't17', 't18'
-        ];
-
-        // Sync background blur match instantly on load
-        bgBlur.style.backgroundImage = `url('1.jpg')`;
-
-        function changePicture(e) {
-            if (isTransitioning) return;
-            isTransitioning = true;
-
-            // Generate fun heart splash explosion exactly where clicked
-            spawnHearts(e.clientX, e.clientY);
-
-            // Determine next index sequentially looping back seamlessly to 1
-            let nextIndex = currentIndex === totalPhotos ? 1 : currentIndex + 1;
-            
-            // Randomly pick one of the 19 unique structural transitions
-            const currentTransition = transitionClasses[(nextIndex - 2 + transitionClasses.length) % transitionClasses.length];
-
-            // 1. Kickstart the transition out animation
-            photo.classList.add(currentTransition);
-
-            // 2. Mid-way switch file swap & drop background match seamlessly
-            setTimeout(() => {
-                photo.src = `${nextIndex}.jpg`;
-                bgBlur.style.backgroundImage = `url('${nextIndex}.jpg')`;
-                currentIndex = nextIndex;
-            }, 450);
-
-            // 3. Clean up classes so incoming graphic glides in smoothly
-            setTimeout(() => {
-                photo.classList.remove(currentTransition);
-                isTransitioning = false;
-            }, 900);
-        }
-
-        function spawnHearts(clickX, clickY) {
-            const symbols = ['❤️', '💖', '💝', '💕', '✨'];
-            const count = 8;
-            
-            for (let i = 0; i < count; i++) {
-                const heart = document.createElement('div');
-                heart.classList.add('heart-particle');
-                heart.innerText = symbols[Math.floor(Math.random() * symbols.length)];
-                
-                // Varied radial trajectories
-                const tx = (Math.random() - 0.5) * 260 + 'px';
-                const ty = (Math.random() - 0.7) * 260 - 40 + 'px';
-                const rot = (Math.random() - 0.5) * 240 + 'deg';
-                const scale = Math.random() * 1.2 + 0.5;
-
-                heart.style.setProperty('--tx', tx);
-                heart.style.setProperty('--ty', ty);
-                heart.style.setProperty('--rot', rot);
-                heart.style.setProperty('--scale', scale);
-                
-                heart.style.left = clickX + 'px';
-                heart.style.top = clickY + 'px';
-
-                document.body.appendChild(heart);
-                setTimeout(() => heart.remove(), 800);
-            }
-        }
-
-        // Single simple global fullscreen interaction trigger
-        stage.addEventListener('click', changePicture);
-    </script>
-</body>
-</html>
+            <img id="main-photo" src="1.jpg" alt="Memory 1" onerror="this.src='https://via.placeholder.com/1000x1500?
